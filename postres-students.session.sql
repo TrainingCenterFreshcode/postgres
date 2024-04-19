@@ -1,22 +1,24 @@
-CREATE TABLE users_with_emails();
-
-DROP TABLE users, users_with_emails, test;
-
-DROP TABLE products;
-
--- Як виконати запит: Ctrl + E (2)
-
-/*
-
-char(5): '1234567' -> error, '12' -> '12   '
-varchar(5): '1234567' -> error, '12' -> '12'
-
-text -> max 1GB
-
-*/
+DROP TABLE users;
 
 CREATE TABLE users(
     first_name varchar(64),
     last_name varchar(64),
-    biography text
+    biography text,
+    gender varchar(30),
+    is_subscribe boolean,
+    birthday date,
+    foot_size smallint,
+    height numeric(5, 2)
 );
+
+/*
+
+numeric(точність, масштаб)
+точність - загальна кількість цифр в числі
+масштаб - кількість цифр після коми
+
+180.55
+точність - 5 цифр
+масштаб - 2 цифри
+
+*/
