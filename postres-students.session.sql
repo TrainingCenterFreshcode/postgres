@@ -1,52 +1,39 @@
 -- Ключ - ознака (найчастіше штучна) яка відрізняє один запис у таблиці від іншого
 -- Первинний ключ (PRIMARY KEY) - використовується для того, щоб ключу дати обмеження унікальності (UNIQUE) і обмеження NOT NULL
+-- Потенційний ключ - стовпець (група стовпців) які могли стати первинним ключем, але ще не обрані як такі.
+-- Зовнішній ключ (foreign key) - стовпець (група стовпців) які містять значення, які посилаються на ідентифікатори в інших таблицях
 
-/*
-
-+ Створити таблицю books
-
-В книги є:
-1. Порядковий номер
-2. Автор книги
-3. Назва книги
-4. Рік випуску
-5. Видавництво
-6. Категорія
-7. Синопсис
-8. Кількість примірників
-9. Статус  -- книга видана / не видана (надрукували її чи ні)
-
-ALTER:
-
-+ 1. Додати до таблиці обмеження, що кількість примірників (пункт 8) не може бути менше 0
-
-* + 2. Додати до таблиці обмеження, що автор + назва книги не може бути пустим рядком і має бути унікальним
-
-*/
-
-CREATE TABLE books(
+CREATE TABLE orders(
     id serial PRIMARY KEY,
-    author varchar(256),
-    name varchar(300),
-    year varchar(4),
-    publisher varchar(256),
-    category varchar(256),
-    synopsys text,
-    quantity int,
-    status boolean
+    created_at timestamp NOT NULL DEFAULT current_timestamp,
+    customer_id int REFERENCES users(id)
 );
 
-ALTER TABLE books
-ADD CONSTRAINT "quantity_more_zero" CHECK (quantity >= 0);
+DROP TABLE orders;
 
-ALTER TABLE books
-ADD CONSTRAINT "author_name_unique" UNIQUE(author, name);
+ALTER TABLE users
+ADD COLUMN id serial PRIMARY KEY;
 
-INSERT INTO books(author, name, quantity) VALUES
-('Оноре Де Бальзак', 'Гобсек', 200);
+CREATE TABLE orders_to_products(
+    product_id int REFERENCES products(id),
+    order_id int REFERENCES orders(id),
+    quntity int,
+    PRIMARY KEY(order_id, product_id)
+);
 
-INSERT INTO books(author, name, quantity) VALUES
-('Оскар Уайльд', 'Портрет Доріана Грея', 0);
+-- таблиця1_to_таблиця2
 
-INSERT INTO books(author, name, quantity) VALUES
-('Оноре Де Бальзак', 'Шагренева шкіра', 1500);
+
+
+-- ОФОРМЛЕННЯ ЗАМОВЛЕННЯ ДЛЯ ЯКОГОСЬ ЮЗЕРА
+
+
+-- 1. Створили замовлення
+INSERT INTO orders (customer_id) VALUES
+(4);
+
+-- 2. Наповнити замовлення
+INSERT INTO orders_to_products (product_id, order_id, quntity) VALUES 
+(2, 1, 1),
+(3, 1, 2),
+(4, 1, 1);
