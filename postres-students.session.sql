@@ -52,13 +52,7 @@ INSERT INTO products(brand, model, price, category) VALUES
 UPDATE products SET brand = 'Iphone' WHERE id = 8 RETURNING *;
 
 
-/*
 
-JS
+--
 
-const user = {
-    firstName: 'John',
-    lastName: 'Doe'
-}
-
-*/
+DELETE FROM users WHERE id >= 11;
