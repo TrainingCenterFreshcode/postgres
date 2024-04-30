@@ -64,4 +64,8 @@ CREATE TABLE orders_to_products( -- order_items
 );
 
 
+----------------------------------------------------
+
 DELETE FROM users;
+
+DELETE FROM orders;

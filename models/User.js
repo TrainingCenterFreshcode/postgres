@@ -13,7 +13,7 @@ class User {
     static async bulkCreate(usersArray) {
         // тут має бути запит до БД на створення багатьох юзерів
         return await this._client.query( // User._client.query
-            `INSERT INTO users (first_name, last_name, email, is_subscribe, gender) VALUES
+            `INSERT INTO ${this._tableName} (first_name, last_name, email, is_subscribe, gender) VALUES
             ${mapUsers(usersArray)};`
         );
     }
