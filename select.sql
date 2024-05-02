@@ -104,12 +104,12 @@ WHERE first_name LIKE 'K%';
 
 /*
 
-Задача: Знайти всіх юзерів, у яких рівно 5 символів у імені
+Задача: Знайти всіх юзерів, у яких рівно 8 символів у імені
 
 */
 
 SELECT first_name, last_name FROM users
-WHERE first_name LIKE '_____';
+WHERE first_name LIKE '________';
 
 
 /*
@@ -165,14 +165,37 @@ WHERE id = 4040;
 
 ДЗ.
 
-1. Потрібно створити невеличку таблицю співробітників (employees):
++ 1. Потрібно створити невеличку таблицю співробітників (employees):
     - id
     - name
     - salary
     - work_hours    (кількість відпрацьованих за місяць годин)
 
-2. Вставити дані (INSERT) про 3-х співробітників
++ 2. Вставити дані (INSERT) про 3-х співробітників
 
-3. Всім співробітникам, які відпрацювали за місяць бульше 150 годин, збільшити зарплату на 20%
+3. Всім співробітникам, які відпрацювали за місяць більше 150 годин, збільшити зарплату на 20% (UPDATE)
 
 */
+
+--- 1
+
+CREATE TABLE employees(
+    id serial PRIMARY KEY,
+    name varchar(256) NOT NULL CHECK(name != ''),
+    salary int NOT NULL CHECK(salary >= 0),
+    work_hours int NOT NULL CHECK(work_hours >= 0)
+);
+
+--- 2
+
+INSERT INTO employees(name, salary, work_hours) VALUES
+('Ivanov', 400, 80),
+('Petrov', 750, 185),
+('Sidorov', 0, 0);
+
+
+--- 3 
+
+UPDATE employees
+SET salary = salary * 1.2
+WHERE work_hours > 150;
