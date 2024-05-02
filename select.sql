@@ -233,3 +233,18 @@ WHERE (gender = 'female' AND is_subscribe);
 -- make_interval([years], [months], [days]) - функція, яка створює власний інтервал
 
 SELECT id, first_name, last_name, make_interval(40, 8) FROM users;
+
+
+-----------
+
+-- Аліаси - псевдоніми
+-- Якщо кирилиця - обов'язково беріть у лапки
+-- Якщо латиниця - можна і з лапками і без лапок
+SELECT first_name AS "Ім'я", last_name AS "Прізвище", id AS "Особистий номер" FROM users;
+
+
+SELECT id, first_name, last_name, birthday, extract("years" from age(birthday)) AS years FROM users
+WHERE extract("years" from age(birthday)) BETWEEN 2 AND 10;
+
+SELECT id, first_name, last_name, birthday, extract("years" from age(birthday)) AS "years old" FROM users
+WHERE extract("years" from age(birthday)) BETWEEN 2 AND 10;
