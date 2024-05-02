@@ -276,3 +276,33 @@ OFFSET 200; -- 50 * 4
 OFFSET = LIMIT * сторінку_яку_ми_запитуємо - 1
 
 */
+
+
+
+--------------------
+
+
+SELECT id, first_name || ' ' || last_name AS "full name", gender, email FROM users;
+
+SELECT id, concat(first_name, ' ', last_name) AS "full name", gender, email FROM users;
+
+
+/*
+
+Задача: Знайти всіх користувачів, повне ім'я яких (ім'я + прізвище) < 10 символів
+
+
+*/
+
+-- варіант 1
+
+SELECT id, concat(first_name, ' ', last_name) AS "full name", gender, email FROM users
+WHERE char_length(concat(first_name, ' ', last_name)) < 10;
+
+
+-- варіант 2
+SELECT * FROM -- основний запит
+( -- підзапит
+    SELECT id, concat(first_name, ' ', last_name) AS "full name", gender, email FROM users
+) AS "FN"
+WHERE char_length("FN"."full name") < 10; -- фільтрація відбувається у основному запиті
