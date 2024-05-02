@@ -213,3 +213,23 @@ WHERE id = 6001;
 
 DELETE FROM users
 WHERE id = 6001;
+
+
+
+-------------------
+
+-- Задача: вивести всіх користувачів з інфою про них + вік
+
+
+SELECT id, first_name, last_name, birthday, extract("years" from age(birthday)) FROM users;
+
+
+UPDATE users
+SET birthday = '2005-01-01'
+WHERE (gender = 'female' AND is_subscribe);
+
+
+----------------
+-- make_interval([years], [months], [days]) - функція, яка створює власний інтервал
+
+SELECT id, first_name, last_name, make_interval(40, 8) FROM users;
