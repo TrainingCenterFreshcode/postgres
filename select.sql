@@ -511,3 +511,23 @@ WHERE extract('years' from age(birthday)) > 10;
 
 SELECT brand, avg(price) FROM products
 GROUP BY brand;
+
+
+-- Сортування - впорядкування даних за якимись ознаками
+
+-- ASC - за збільшенням (default)
+-- DESC - за зменшенням
+
+SELECT * FROM users
+ORDER BY birthday ASC,
+            first_name ASC;
+
+UPDATE users
+SET birthday = '2002-09-14'
+WHERE id BETWEEN 4038 AND 4046;
+
+-- Вивести топ-3 телефони, яких в нас залишилось найменше
+
+SELECT * FROM products
+ORDER BY quantity ASC
+LIMIT 3;
