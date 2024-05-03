@@ -318,38 +318,154 @@ WHERE char_length("FN"."full name") < 10; -- фільтрація відбува
 - salary
 - birthday
 
+*/
+
+CREATE TABLE workers(
+    id serial PRIMARY KEY,
+    name varchar(100) NOT NULL CHECK (name != ''),
+    salary int NOT NULL CHECK (salary >= 0),
+    birthday date NOT NULL CHECK (birthday < current_date)
+);
+
+/*
 
 1. Додайте робітника з ім'ям Олег, з/п 300
 
+*/
+
+INSERT INTO workers(name, salary, birthday) VALUES
+('Oleg', 300, '1968-03-26');
+
+/*
+
 2. Додайте робітницю Ярославу, з/п 500
+
+*/
+
+INSERT INTO workers(name, salary, birthday) VALUES
+('Jaroslava', 500, '1958-09-12');
+
+
+/*
 
 3. Додайте двох нових працівників одним запитом -
 Сашу, з/п 1000
 Машу, з/п 200
 
+*/
+
+INSERT INTO workers(name, salary, birthday) VALUES
+('Sasha', 1000, '1990-12-30'),
+('Masha', 200, '1985-11-01');
+
+/*
+
 4. Встановити Олегу з/п 500
+
+*/
+
+UPDATE workers
+SET salary = 500
+WHERE id = 1;
+
+/*
 
 5. Всім, у кого з/п більше 500, врізати з/п до 400
 
+*/
+
+UPDATE workers
+SET salary = 400
+WHERE salary > 500;
+
+/*
+
 6. Вибрати (SELECT) всіх робітників, чия з/п більше 400
+
+*/
+
+SELECT * FROM workers
+WHERE salary > 400;
+
+/*
 
 7. Вибрати робітника з id = 4
 
-8. Дізнатися (SELECT) з/п та вік Жені
+*/
 
-9. Спробувати знайти робітника з ім'ям "Petya"
+SELECT * FROM workers
+WHERE id = 4;
+
+/*
+
+8. Дізнатися (SELECT) з/п та вік Олега
+
+*/
+
+SELECT *, extract('years' from age(birthday)) FROM workers
+WHERE id = 1;
+
+/*
+
+9. Спробувати знайти робітника з ім'ям "Jaroslava"
+
+*/
+
+SELECT * FROM workers
+WHERE name = 'Jaroslava';
+
+
+/*
 
 10. Вибрати робітників у віці 30 років АБО з з/п > 800
 WHERE _кількість_років_ = 30 OR salary > 800;
 
+*/
+
+SELECT * FROM workers
+WHERE extract('years' from age(birthday)) = 30 OR salary > 800;
+
+/*
+
 11. Вибрати всіх робітників у віці від 25 до 28 років
+
+*/
+
+SELECT *, extract('years' from age(birthday)) AS "age" FROM workers
+WHERE extract('years' from age(birthday)) BETWEEN 25 AND 28;
+
+/*
 
 12. Вибрати всіх співробітників, що народились у вересні
 
+*/
+
+SELECT *, extract('month' from birthday) FROM workers
+WHERE extract('month' from birthday) = 9;
+
+/*
+
 13. Видалити робітника з id = 4
 
+*/
+
+DELETE FROM workers
+WHERE id = 4;
+
+/*
+
 14. Видалити Олега
+
+*/
+
+DELETE FROM workers
+WHERE name = 'Oleg';
+
+/*
 
 15. Видалити всіх робітників старших за 30 років
 
 */
+
+DELETE FROM workers
+WHERE extract('years' from age(birthday)) > 30;
