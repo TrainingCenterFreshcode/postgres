@@ -560,66 +560,6 @@ HAVING count(*) < 500;
 
 
 
---- РЕЛЯЦІЙНІ ОПЕРАЦІЇ
-
-CREATE TABLE A (
-    v char(3),
-    t int
-);
-
-CREATE TABLE B (
-    v char(3)
-);
-
-INSERT INTO A VALUES
-('XXX', 1),
-('XXY', 1),
-('XXZ', 1),
-('XYX', 2),
-('XYY', 2),
-('XYZ', 2),
-('YXX', 3),
-('YXY', 3),
-('YXZ', 3);
-
-INSERT INTO B VALUES
-('ZXX'),
-('XXX'), -- A
-('ZXZ'),
-('YXZ'), -- A
-('YXY'); -- А
-
-
-SELECT * FROM A, B;
-
--- UNION - об'єднання
--- (все те, що в А + все те, що в B. А те, що є і там і там - в 1 екземплярі)
-
--- INTERSECT - перетин множин
--- (все те, що є і в А і в B в єдиному екземплярі)
-
--- Різниця:
----- А мінус B - все з А мінус спільні елементи для А і В
----- В мінус А - все з В мінус спільні елементи для А і В
-
-
-SELECT v FROM A
-UNION
-SELECT * FROM B; -- ОТРИМАЄМО ВСІ УНІКАЛЬНІ ЗАПИСИ З ДВОХ ТАБЛИЦЬ БЕЗ ДУБЛЮВАНЬ
-
-SELECT v FROM A
-INTERSECT
-SELECT * FROM B; -- ОТРИМАЛИ 3 ЕЛЕМЕНТИ, ЯКІ ПОВТОРЮЮТЬ В ДВОХ ТАБЛИЦЯХ
-
-SELECT v FROM A
-EXCEPT
-SELECT * FROM B; -- ОТРИМАЄМО ВСІ ЕЛЕМЕНТИ З ТАБЛИЦІ А, МІНУС СПІЛЬНІ ЕЛЕМЕНТИ З ТАБЛИЦЬ А І В
-
-
-
-
-
-
 /*
 
 ДЗ
@@ -709,3 +649,86 @@ SELECT *
 FROM products
 ORDER BY price DESC
 LIMIT 5;
+
+
+
+--- РЕЛЯЦІЙНІ ОПЕРАЦІЇ
+
+CREATE TABLE A (
+    v char(3),
+    t int
+);
+
+CREATE TABLE B (
+    v char(3)
+);
+
+INSERT INTO A VALUES
+('XXX', 1),
+('XXY', 1),
+('XXZ', 1),
+('XYX', 2),
+('XYY', 2),
+('XYZ', 2),
+('YXX', 3),
+('YXY', 3),
+('YXZ', 3);
+
+INSERT INTO B VALUES
+('ZXX'),
+('XXX'), -- A
+('ZXZ'),
+('YXZ'), -- A
+('YXY'); -- А
+
+
+SELECT * FROM A, B;
+
+-- UNION - об'єднання
+-- (все те, що в А + все те, що в B. А те, що є і там і там - в 1 екземплярі)
+
+-- INTERSECT - перетин множин
+-- (все те, що є і в А і в B в єдиному екземплярі)
+
+-- Різниця - не комутативна:
+---- А мінус B - все з А мінус спільні елементи для А і В
+---- В мінус А - все з В мінус спільні елементи для А і В
+
+
+SELECT v FROM A
+UNION
+SELECT * FROM B; -- ОТРИМАЄМО ВСІ УНІКАЛЬНІ ЗАПИСИ З ДВОХ ТАБЛИЦЬ БЕЗ ДУБЛЮВАНЬ
+
+SELECT v FROM A
+INTERSECT
+SELECT * FROM B; -- ОТРИМАЛИ 3 ЕЛЕМЕНТИ, ЯКІ ПОВТОРЮЮТЬ В ДВОХ ТАБЛИЦЯХ
+
+SELECT * FROM B
+EXCEPT
+SELECT v FROM A; -- ОТРИМАЄМО ВСІ ЕЛЕМЕНТИ З ТАБЛИЦІ B, МІНУС СПІЛЬНІ ЕЛЕМЕНТИ З ТАБЛИЦЬ А І В
+
+
+
+
+
+INSERT INTO users (first_name, last_name, email, gender, is_subscribe, birthday)
+VALUES 
+('User 1', 'Test 1', 'email1@gmail.com', 'male', true, '1990-09-10'), 
+('User 2', 'Test 2', 'email2@gmail.com', 'female', true, '1990-09-10'), 
+('User 3', 'Test 3', 'email3@gmail.com', 'male', false, '1990-09-10');
+
+
+
+
+
+-- Задача: знайти id юзерів, які робили замовлення
+
+SELECT id FROM users
+INTERSECT
+SELECT customer_id FROM orders;
+
+-- Задача: знайти id юзерів, які не робили замовлень
+
+SELECT id FROM users
+EXCEPT
+SELECT customer_id FROM orders;
