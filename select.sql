@@ -885,7 +885,7 @@ LIMIT 1;
 
 3. Витягти всіх користувачів, в яких кількість замовлень вище середнього
 
-4. Витягти користувачів та кількість товарів, які вони замовляли (кількість замовлень * quantity)
+4. Витягти користувачів та кількість товарів, які вони замовляли sum(quantity)
 
 */
 
@@ -940,3 +940,27 @@ WHERE orders_with_cost.cost > (
     -- запит, який знаходить середній чек по всьому магазину
     SELECT avg(orders_with_cost.cost) FROM orders_with_cost
 );
+
+-- 3
+
+WITH orders_with_counts AS (
+    -- Кількість замовлень кожного користувача
+    SELECT customer_id, count(*) AS orders_count FROM orders
+    GROUP BY customer_id
+)
+
+SELECT * FROM 
+orders_with_counts JOIN users
+ON users.id = orders_with_counts.customer_id
+WHERE orders_with_counts.orders_count > (
+    SELECT avg(orders_with_counts.orders_count) FROM orders_with_counts
+);
+
+-- 4
+
+SELECT u.id, u.first_name, u.last_name , sum(otp.quantity) AS "products quantity" FROM
+users AS u JOIN orders AS o
+ON u.id = o.customer_id
+JOIN orders_to_products AS otp
+ON o.id = otp.order_id
+GROUP BY u.id;
