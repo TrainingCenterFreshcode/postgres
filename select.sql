@@ -875,3 +875,68 @@ ON p.id = otp.products_id
 GROUP BY p.id
 ORDER BY customer_sum DESC
 LIMIT 1;
+
+
+/*
+
+1. Порахувати середній чек по всьому магазину
+
+2. Витягти всі замовлення вище середнього чека
+
+3. Витягти всіх користувачів, в яких кількість замовлень вище середнього
+
+4. Витягти користувачів та кількість товарів, які вони замовляли (кількість замовлень * quantity)
+
+*/
+
+-- 1
+
+SELECT avg(owc.cost) FROM (
+    -- запит знаходить суму кожного замовлення
+    SELECT otp.order_id, sum(p.price * otp.quantity) AS cost FROM
+    orders_to_products AS otp JOIN products AS p
+    ON otp.products_id = p.id
+    GROUP BY otp.order_id
+) AS owc;
+
+-- 2 -- variant 1
+
+SELECT owc.* FROM ( -- orders with cost
+    -- запит знаходить суму кожного замовлення
+    SELECT otp.order_id, sum(p.price * otp.quantity) AS cost FROM
+    orders_to_products AS otp JOIN products AS p
+    ON otp.products_id = p.id
+    GROUP BY otp.order_id
+) AS owc
+WHERE owc.cost > (
+        SELECT avg(owc.cost) FROM (
+        -- запит знаходить суму кожного замовлення
+        SELECT otp.order_id, sum(p.price * otp.quantity) AS cost FROM
+        orders_to_products AS otp JOIN products AS p
+        ON otp.products_id = p.id
+        GROUP BY otp.order_id
+    ) AS owc
+);
+
+-- 2 -- variant 2
+
+/*
+
+WITH ...alias... AS table
+SELECT ....
+
+*/
+
+WITH orders_with_cost AS (
+    -- запит знаходить суму кожного замовлення
+    SELECT otp.order_id, sum(p.price * otp.quantity) AS cost FROM
+    orders_to_products AS otp JOIN products AS p
+    ON otp.products_id = p.id
+    GROUP BY otp.order_id
+)
+
+SELECT * FROM orders_with_cost
+WHERE orders_with_cost.cost > (
+    -- запит, який знаходить середній чек по всьому магазину
+    SELECT avg(orders_with_cost.cost) FROM orders_with_cost
+);
