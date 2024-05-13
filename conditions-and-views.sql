@@ -1,39 +1,45 @@
 /*
 
-Задача: порахувати кількість замовлень
+order -> status:
+- true = виконано
+- false = не виконано
+- ('new', 'processing', 'shiped', 'done', 'canceled')
 
 */
 
-CREATE MATERIALIZED VIEW total_orders AS (
-    SELECT count(*) AS "загальна кількість замовлень" 
-    FROM orders
-);
+INSERT INTO orders(customer_id, status) VALUES
+(6003, 'new');
 
-DROP MATERIALIZED VIEW total_orders;
-
-SELECT * FROM total_orders; -- 6956
-
-INSERT INTO orders (customer_id, status)
-VALUES (
-    6002,
-    false
-);
-
-REFRESH MATERIALIZED VIEW total_orders;
+CREATE TYPE order_status AS ENUM('new', 'processing', 'shiped', 'done', 'canceled');
 
 
-
-CREATE FUNCTION refresh_materialized_view()
-RETURNS void
-AS
-$$
-BEGIN
-    REFRESH MATERIALIZED VIEW total_orders;
-END;
-$$
-LANGUAGE plpgsql;
-
-DROP FUNCTION refresh_materialized_view();
+ALTER TABLE orders
+ALTER COLUMN status 
+TYPE order_status
+USING (
+    CASE status
+        WHEN false THEN 'processing'
+        WHEN true THEN 'done'
+        ELSE 'new'
+    END
+)::order_status;
 
 
-SELECT refresh_materialized_view();
+
+SELECT * FROM orders
+ORDER BY created_at DESC;
+
+
+UPDATE orders
+SET status = 'done'
+WHERE id = 12956;
+
+
+
+
+
+
+
+
+DROP VIEW users_with_orders_amount;
+DROP VIEW orders_with_price;
